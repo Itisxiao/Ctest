@@ -13,15 +13,18 @@ struct student {
     
 };
 
+void testStruct(const student& s){
+
+    cout << "Name: " << s.name << ", Age: " << s.age << ", Grade: " << s.grade << endl;
+
+}
+
 int main() {
     // TODO: Write your code here
-    student* s1 = new student("Alice", 20, 85.5);
-    cout << "Name: " << s1->name << ", Age: " << s1->age << ", Grade: " << s1->grade << endl;
-    student* s2 = new student("Bob", 22, 90.0);
-    cout << "Name: " << s2->name << ", Age: " << s2->age << ", Grade: " << s2->grade << endl;
+    student s1("Alice", 20, 85.5);
+    testStruct(s1);
+    student s2("Bob", 22, 90.0);
+    testStruct(s2);
 
-    delete s1;  
-    delete s2;
-    
     return 0;
 }
