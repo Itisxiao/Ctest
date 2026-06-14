@@ -27,6 +27,12 @@ int secondHighest(const string &s)
     }
     return second;
 }
+//查找包含的字符串
+bool contains(string &s, string &t)
+{
+    return s.find(t) != string::npos;
+}
+
 
 int main()
 {
