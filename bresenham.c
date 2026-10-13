@@ -79,9 +79,17 @@ void write_ppm(const char* filename) {
     }
 
     // 文件头
+    // 参数 1: 文件指针
+    // 参数 2: 格式化字符串
+    // 参数 3: 宽度
+    // 参数 4: 高度
     fprintf(fp, "P6\n%d %d\n255\n", WIDTH, HEIGHT);
 
     // 像素数据
+    // 参数 1: 指向数据的指针
+    // 参数 2: 每个元素的大小（字节数）
+    // 参数 3: 元素个数 
+    // 参数 4: 文件指针
     fwrite(framebuffer, 1, sizeof(framebuffer), fp);
 
     fclose(fp);
