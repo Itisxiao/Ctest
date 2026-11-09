@@ -154,3 +154,15 @@ int main(int argc, const char * argv[]) {
     @autoreleasepool { NSApplication *app = [NSApplication sharedApplication]; AppDelegate *delegate = [[AppDelegate alloc] init]; [app setDelegate:delegate]; [app setActivationPolicy:NSApplicationActivationPolicyRegular]; [app run]; }
     return 0;
 }
+
+/*
+ScreenCaptureKit 是"采集服务"，它跨进程从 WindowServer 拿帧，交付格式必须是系统定义的 CMSampleBuffer——这是 CoreMedia 的通用容器，不是 Metal 的。你不能让 SCK 直接吐 MTLTexture，因为采集框架不该依赖渲染框架。
+
+CVPixelBuffer 是"图像容器"，它包着 IOSurface（真正的共享内存）。CoreVideo 用它来统一描述"一张图"，但它不是 GPU 资源类型。你要用 GPU 就得把它映射成 MTLTexture——注意是映射不是拷贝。
+
+MTLTexture 是"GPU 资源句柄"，Metal 只认这个。所以 CVMetalTextureCache 的角色就是"把 IOSurface 包成 MTLTexture 的翻译官"，同一个 IOSurface 两边都能看。
+
+CAMetalLayer.nextDrawable 是"上屏契约"，屏幕上的内容由 WindowServer 合成，你必须把结果写进它给你的 drawable（又是一块 IOSurface），不能自己随便找块显存就往屏幕上怼。
+
+Render Pipeline 是"唯一必须做的活"：采集格式（常见 BGRA 或 YCbCr 10bit）≠ 显示格式，分辨率也可能不同，还可能要做色彩空间/HDR 转换。这一步必须跑 shader，绕不开。 
+*/
